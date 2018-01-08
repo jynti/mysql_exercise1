@@ -1,24 +1,14 @@
-mysql> create table Branch
+mysql> CREATE TABLE Branch
     -> (
-    -> BCode char(2) not null primary key,
-    -> Librarian varchar(40),
-    -> Address varchar(40)
+    -> BCode CHAR(2) NOT NULL PRIMARY KEY,
+    -> Librarian VARCHAR(40),
+    -> Address VARCHAR(40)
     -> )
-    -> engine=innodb;
+    -> ENGINE=INNODB;
 Query OK, 0 rows affected (0.42 sec)
 
-mysql> describe Branch;
-+-----------+-------------+------+-----+---------+-------+
-| Field     | Type        | Null | Key | Default | Extra |
-+-----------+-------------+------+-----+---------+-------+
-| BCode     | char(2)     | NO   | PRI | NULL    |       |
-| Librarian | varchar(40) | YES  |     | NULL    |       |
-| Address   | varchar(40) | YES  |     | NULL    |       |
-+-----------+-------------+------+-----+---------+-------+
-3 rows in set (0.01 sec)
-
-mysql> insert into Branch
-    -> values ('B1', 'John Smith', '2 Anglesea Rd'),
+mysql> INSERT INTO Branch
+    -> VALUES ('B1', 'John Smith', '2 Anglesea Rd'),
     -> ('B2', 'Mary Jones', '34 Pearse St'),
     -> ('B3', 'Francis Owens', 'Grange X');
 Query OK, 3 rows affected (0.35 sec)
@@ -26,27 +16,17 @@ Records: 3  Duplicates: 0  Warnings: 0
 
 ////////////////////////////////////////////////////////////////////////////
 
-mysql> create table Titles
+mysql> CREATE TABLE Titles
     -> (
-    -> Title varchar(40) not null primary key,
-    -> Author varchar(40),
-    -> Publisher varchar(40)
+    -> Title VARCHAR(40) NOT NULL PRIMARY KEY,
+    -> Author VARCHAR(40),
+    -> Publisher VARCHAR(40)
     -> )
-    -> engine=innodb;
+    -> ENGINE=INNODB;
 Query OK, 0 rows affected (0.46 sec)
 
-mysql> describe Titles;
-+-----------+-------------+------+-----+---------+-------+
-| Field     | Type        | Null | Key | Default | Extra |
-+-----------+-------------+------+-----+---------+-------+
-| Title     | varchar(40) | NO   | PRI | NULL    |       |
-| Author    | varchar(40) | YES  |     | NULL    |       |
-| Publisher | varchar(40) | YES  |     | NULL    |       |
-+-----------+-------------+------+-----+---------+-------+
-3 rows in set (0.00 sec)
-
-mysql> insert into Titles
-    -> values ('Susannah', 'Ann Brown', 'Macmillan'),
+mysql> INSERT INTO Titles
+    -> VALUES ('Susannah', 'Ann Brown', 'Macmillan'),
     -> ('How to Fish', 'Amy Fly', 'Stop Press'),
     -> ('A History of Dublin', 'David Little', 'Wiley'),
     -> ('Computers', 'Blaise Pascal', 'Applewoods'),
@@ -56,30 +36,20 @@ Records: 5  Duplicates: 0  Warnings: 0
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-mysql> create table Holdings
+mysql> CREATE TABLE Holdings
     -> (
-    -> Branch char(2) not null,
-    -> Title varchar(40) not null,
-    -> NumberOfCopies int,
-    -> primary key (Branch, Title),
-    -> foreign key (Branch) references Branch (BCode),
-    -> foreign key (Title) references Titles (Title)
+    -> Branch CHAR(2) NOT NULL,
+    -> Title VARCHAR(40) NOT NULL,
+    -> NumberOfCopies INT,
+    -> PRIMARY KEY (Branch, Title),
+    -> FOREIGN KEY (Branch) REFERENCES Branch (BCode),
+    -> FOREIGN KEY (Title) REFERENCES Titles (Title)
     -> )
-    -> engine=innodb;
+    -> ENGINE=INNODB;
 Query OK, 0 rows affected (0.43 sec)
 
-mysql> describe Holdings;
-+----------------+-------------+------+-----+---------+-------+
-| Field          | Type        | Null | Key | Default | Extra |
-+----------------+-------------+------+-----+---------+-------+
-| Branch         | char(2)     | NO   | PRI | NULL    |       |
-| Title          | varchar(40) | NO   | PRI | NULL    |       |
-| NumberOfCopies | int(11)     | YES  |     | NULL    |       |
-+----------------+-------------+------+-----+---------+-------+
-3 rows in set (0.01 sec)
-
-mysql> insert into Holdings
-    -> values ('B1', 'Susannah', 3),
+mysql> INSERT INTO Holdings
+    -> VALUES ('B1', 'Susannah', 3),
     -> ('B1', 'How to Fish', 2),
     -> ('B1', 'A History of Dublin', 1),
     -> ('B2', 'How to Fish', 4),
@@ -94,9 +64,9 @@ Records: 10  Duplicates: 0  Warnings: 0
 
 ////////////////////////////////////////////////////////////////////////////////
 1)
-mysql> select Title
-    -> from Titles
-    -> where Publisher='Macmillan';
+mysql> SELECT Title
+    -> FROM Titles
+    -> WHERE Publisher='Macmillan';
 +----------+
 | Title    |
 +----------+
@@ -107,13 +77,13 @@ mysql> select Title
 
 ////////////////////////////////////////////////////////////////////////////////
 2)
-mysql> select distict Branch
-    -> from Holdings
-    -> where Title in
+mysql> SELECT DISTINCT Branch
+    -> FROM Holdings
+    -> WHERE Title IN
     -> (
-    -> select t.Title
-    -> from Titles as t
-    -> where Author='Ann Brown'
+    -> SELECT t.Title
+    -> FROM Titles AS t
+    -> WHERE Author='Ann Brown'
     -> );
 +--------+
 | Branch |
@@ -127,9 +97,9 @@ mysql> select distict Branch
 
 ////////////////////////////////////////////////////////////////////////////////
 3)
-mysql> select distinct Branch
-    -> from Holdings as h natural join Titles as t
-    -> where Author='Ann Brown';
+mysql> SELECT DISTINCT Branch
+    -> FROM Holdings AS h NATURAL JOIN Titles AS t
+    -> WHERE Author='Ann Brown';
 +--------+
 | Branch |
 +--------+
@@ -141,11 +111,11 @@ mysql> select distinct Branch
 
 ////////////////////////////////////////////////////////////////////////////////
 4)
-mysql> select Branch, sum(NumberOfCopies)
-    -> from Holdings
-    -> group by Branch;
+mysql> SELECT Branch, SUM(NumberOfCopies) AS  totalCopies
+    -> FROM Holdings
+    -> GROUP BY Branch;
 +--------+---------------------+
-| Branch | sum(NumberOfCopies) |
+| Branch | totalCopies |
 +--------+---------------------+
 | B1     |                   6 |
 | B2     |                   9 |
