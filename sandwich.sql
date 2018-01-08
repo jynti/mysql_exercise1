@@ -1,24 +1,14 @@
-
-mysql> create table Tastes
+mysql> CREATE TABLE Tastes
     -> (
-    -> Name varchar(20) not null,
-    -> Filling varchar(20) not null,
-    -> primary key(Name, Filling)
+    -> Name VARCHAR(20) NOT NULL,
+    -> Filling VARCHAR(20) NOT NULL,
+    -> PRIMARY KEY(Name, Filling)
     -> )
-    -> engine=innodb;
+    -> ENGINE=INNODB;
 Query OK, 0 rows affected (0.70 sec)
 
-    mysql> describe Tastes;
-    +---------+-------------+------+-----+---------+-------+
-    | Field   | Type        | Null | Key | Default | Extra |
-    +---------+-------------+------+-----+---------+-------+
-    | Name    | varchar(20) | NO   | PRI | NULL    |       |
-    | Filling | varchar(20) | NO   | PRI | NULL    |       |
-    +---------+-------------+------+-----+---------+-------+
-    2 rows in set (0.00 sec)
-
-mysql> insert into Tastes
-    -> values ('Brown', 'Turkey'),
+mysql> INSERT INTO Tastes
+    -> VALUES ('Brown', 'Turkey'),
     -> ('Brown', 'Beef'),
     -> ('Brown', 'Ham'),
     -> ('Jones', 'Cheese'),
@@ -28,27 +18,17 @@ mysql> insert into Tastes
 
 
 ///////////////////////////////////////////////////////////////
-mysql> create table Locations
+mysql> CREATE TABLE Locations
     -> (
-    -> LName varchar(20) not null primary key,
-    -> Phone varchar(20),
-    -> Address varchar(40)
+    -> LName VARCHAR(20) NOT NULL PRIMARY KEY,
+    -> Phone VARCHAR(20),
+    -> Address VARCHAR(40)
     -> )
-    -> engine=innodb;
+    -> ENGINE=INNODB;
 Query OK, 0 rows affected (0.73 sec)
 
-mysql> describe Locations;
-+---------+-------------+------+-----+---------+-------+
-| Field   | Type        | Null | Key | Default | Extra |
-+---------+-------------+------+-----+---------+-------+
-| LName   | varchar(20) | NO   | PRI | NULL    |       |
-| Phone   | varchar(20) | YES  |     | NULL    |       |
-| Address | varchar(40) | YES  |     | NULL    |       |
-+---------+-------------+------+-----+---------+-------+
-3 rows in set (0.00 sec)
-
-mysql> insert into Locations
-    -> values ('Lincoln', '683 4523', 'Lincoln Place'),
+mysql> INSERT INTO Locations
+    -> VALUES ('Lincoln', '683 4523', 'Lincoln Place'),
     -> ('O\'Neill\'s', '674 2134', 'Pearse St'),
     -> ('Old Nag', '767 8132', 'Dame St'),
     -> ('Buttery', '702 3421', 'College St');
@@ -56,30 +36,19 @@ Query OK, 4 rows affected (0.08 sec)
 Records: 4  Duplicates: 0  Warnings: 0
 
 /////////////////////////////////////////////////////////////////
-mysql> create table Sandwiches
+mysql> CREATE TABLE Sandwiches
     -> (
-    -> Location varchar(20) not null references Locations (LName),
-    -> Bread varchar(20) not null,
-    -> Filling varchar(20) not null,
-    -> Price float,
-    -> primary key (Location, Bread, Filling)
+    -> Location VARCHAR(20) NOT NULL REFERENCES Locations (LName),
+    -> Bread VARCHAR(20) NOT NULL,
+    -> Filling VARCHAR(20) NOT NULL,
+    -> Price FLOAT,
+    -> PRIMARY KEY (Location, Bread, Filling)
     -> )
-    -> engine=innodb;
+    -> ENGINE=INNODB;
 Query OK, 0 rows affected (1.16 sec)
 
-mysql> describe Sandwiches;
-+----------+-------------+------+-----+---------+-------+
-| Field    | Type        | Null | Key | Default | Extra |
-+----------+-------------+------+-----+---------+-------+
-| Location | varchar(20) | NO   | PRI | NULL    |       |
-| Bread    | varchar(20) | NO   | PRI | NULL    |       |
-| Filling  | varchar(20) | NO   | PRI | NULL    |       |
-| Price    | float       | YES  |     | NULL    |       |
-+----------+-------------+------+-----+---------+-------+
-4 rows in set (0.00 sec)
-
-mysql> insert into Sandwiches
-    -> values ('Lincoln', 'Rye', 'Ham', 1.25),
+mysql> INSERT INTO Sandwiches
+    -> VALUES ('Lincoln', 'Rye', 'Ham', 1.25),
     -> ('O\'Neill\'s', 'White', 'Cheese', 1.20),
     -> ('O\'Neill\'s', 'Whole', 'Ham', 1.25),
     -> ('Old Nag', 'Rye', 'Beef', 1.35),
@@ -96,13 +65,13 @@ Records: 10  Duplicates: 0  Warnings: 0
 /////////////////////////////////////////////////////////////////
 
 1)
-mysql> select Location
-    -> from Sandwiches
-    -> where Filling in
+mysql> SELECT Location
+    -> FROM Sandwiches
+    -> WHERE Filling in
     -> (
-    -> select Filling
-    -> from Tastes
-    -> where Name='Jones'
+    -> SELECT Filling
+    -> FROM Tastes
+    -> WHERE Name='Jones'
     -> )
     -> ;
 +-----------+
@@ -112,11 +81,13 @@ mysql> select Location
 | O'Neill's |
 +-----------+
 2 rows in set (0.00 sec)
+
 ////////////////////////////////////////////////////////////////////
+
 2)
-mysql> select Location
-    -> from Tastes as t natural join Sandwiches as s
-    -> where t.Name='Jones';
+mysql> SELECT Location
+    -> FROM Tastes AS t NATURAL JOIN Sandwiches AS s
+    -> WHERE t.Name='Jones';
 +-----------+
 | Location  |
 +-----------+
@@ -124,11 +95,13 @@ mysql> select Location
 | O'Neill's |
 +-----------+
 2 rows in set (0.00 sec)
+
 ////////////////////////////////////////////////////////////////////
+
 3)
-mysql> select Location, count(distinct Name) as NumberOfPeople
-    -> from Sandwiches natural join Tastes
-    -> group by Location;
+mysql> SELECT Location, count(distinct Name) AS NumberOfPeople
+    -> FROM Sandwiches NATURAL JOIN Tastes
+    -> GROUP BY Location;
 
 +-----------+----------------+
 | Location  | NumberOfPeople |
